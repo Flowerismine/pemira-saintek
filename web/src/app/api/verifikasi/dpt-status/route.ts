@@ -32,7 +32,7 @@ export async function GET(request: Request) {
 
     // Group votes by NIM
     const votesMap: Record<string, Record<string, string>> = {};
-    for (const v of votesData) {
+    for (const v of votesData as any[]) {
       if (!v.users?.nim) continue;
       const nim = v.users.nim;
       if (!votesMap[nim]) votesMap[nim] = {};

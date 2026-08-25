@@ -154,7 +154,7 @@ export default function RegistrasiPage() {
             <div className="bg-emerald-500 h-full rounded-full" style={{ width: `${demaPercent}%` }}></div>
           </div>
         </div>
-        {Object.entries(hmjStats).map(([jur, stats], i) => {
+        {Object.entries(hmjStats).map(([jur, stats]: [string, any], i) => {
           const pct = stats.total > 0 ? Math.round((stats.registered / stats.total) * 100) : 0;
           return (
             <div 
