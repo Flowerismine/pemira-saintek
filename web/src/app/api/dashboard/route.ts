@@ -23,7 +23,7 @@ export async function GET() {
       supabase.from('whitelist_mahasiswa').select('*', { count: 'exact', head: true }),
       supabase.from('votes').select('*', { count: 'exact', head: true }),
       supabase.from('votes').select('*', { count: 'exact', head: true }).eq('status_verifikasi', 'menunggu_verifikasi'),
-      supabase.from('votes').select('id, created_at, status_verifikasi, users!votes_user_id_fkey(nim, nama)').order('created_at', { ascending: false }).limit(5),
+      supabase.from('votes').select('id, created_at, status_verifikasi, users!votes_user_id_fkey(nim, nama), periode_pemilihan(jenjang, fakultas_id)').order('created_at', { ascending: false }).limit(5),
       supabase.from('periode_pemilihan').select('id, jenjang, fakultas_id'),
       supabase.from('votes').select('periode_id'),
       supabase.from('whitelist_mahasiswa').select('jurusan'),

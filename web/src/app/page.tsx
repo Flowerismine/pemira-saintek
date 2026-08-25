@@ -162,6 +162,7 @@ export default function Home() {
                   <div>
                     <p className="text-sm text-slate-700 font-medium">
                       {act.status_verifikasi === 'menunggu_verifikasi' ? 'Suara Masuk (Menunggu)' : act.status_verifikasi === 'terverifikasi' ? 'Suara Sah Terverifikasi' : 'Suara Ditolak'}
+                      <span className="text-xs text-primary-600 ml-1">({act.periode_pemilihan?.jenjang === 'HMJ' ? `HMJ ${act.periode_pemilihan?.fakultas_id}` : act.periode_pemilihan?.jenjang})</span>
                     </p>
                     <p className="text-xs text-slate-500 mt-1">{act.users?.nim} - {act.users?.nama} • {new Date(act.created_at).toLocaleTimeString('id-ID')}</p>
                   </div>
