@@ -325,7 +325,7 @@ export default function VerifikasiSuaraPage() {
                 <tr className="bg-slate-50 border-b border-slate-200 text-slate-500 text-xs uppercase tracking-wider">
                   <th className="px-6 py-4 font-medium">NIM</th>
                   <th className="px-6 py-4 font-medium">Nama / Jurusan</th>
-                  <th className="px-6 py-4 font-medium">Status Vote: BEM-F</th>
+                  <th className="px-6 py-4 font-medium">Status Vote: DEMA-F</th>
                   <th className="px-6 py-4 font-medium">Status Vote: SEMA-F</th>
                   <th className="px-6 py-4 font-medium">Status Vote: HMJ</th>
                 </tr>
@@ -355,7 +355,7 @@ export default function VerifikasiSuaraPage() {
                         <div className="font-medium text-slate-900">{d.nama}</div>
                         <div className="text-xs text-slate-500">{d.jurusan || 'Tanpa Jurusan'}</div>
                       </td>
-                      <td className="px-6 py-4">{renderBadge(d.votes['BEM-F'])}</td>
+                      <td className="px-6 py-4">{renderBadge(d.votes['DEMA-F'])}</td>
                       <td className="px-6 py-4">{renderBadge(d.votes['SEMA-F'])}</td>
                       <td className="px-6 py-4">{renderBadge(d.votes['HMJ'])}</td>
                     </tr>

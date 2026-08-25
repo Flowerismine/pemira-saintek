@@ -21,7 +21,7 @@ export default function PeriodePemilihan() {
 
   // Form State
   const [editId, setEditId] = useState<string | null>(null);
-  const [jenjang, setJenjang] = useState('BEM-F');
+  const [jenjang, setJenjang] = useState('DEMA-F');
   const [fakultasId, setFakultasId] = useState('');
   const [tanggalMulai, setTanggalMulai] = useState('');
   const [tanggalSelesai, setTanggalSelesai] = useState('');
@@ -73,7 +73,7 @@ export default function PeriodePemilihan() {
   const handleCloseModal = () => {
     setIsModalOpen(false);
     setEditId(null);
-    setJenjang('BEM-F');
+    setJenjang('DEMA-F');
     setFakultasId('');
     setTanggalMulai('');
     setTanggalSelesai('');
@@ -90,7 +90,7 @@ export default function PeriodePemilihan() {
 
     const payload = {
       jenjang,
-      fakultas_id: (jenjang === 'BEM-F' || jenjang === 'SEMA-F') ? 'Seluruh Fakultas' : fakultasId,
+      fakultas_id: (jenjang === 'DEMA-F' || jenjang === 'SEMA-F') ? 'Seluruh Fakultas' : fakultasId,
       tanggal_mulai: mulaiISO,
       tanggal_selesai: selesaiISO,
       status: editId ? status : 'draft',
@@ -252,7 +252,7 @@ export default function PeriodePemilihan() {
                   onChange={(e) => setJenjang(e.target.value)}
                   required
                 >
-                  <option value="BEM-F">BEM Fakultas</option>
+                  <option value="DEMA-F">DEMA Fakultas (DEMA-F)</option>
                   <option value="SEMA-F">SEMA Fakultas</option>
                   <option value="HMJ">Himpunan Mahasiswa Jurusan (HMJ)</option>
                 </select>
@@ -260,7 +260,7 @@ export default function PeriodePemilihan() {
 
                 <div>
                   <label className="block text-sm font-medium text-slate-700 mb-1">Target Pemilih</label>
-                  {jenjang === 'BEM-F' || jenjang === 'SEMA-F' ? (
+                  {jenjang === 'DEMA-F' || jenjang === 'SEMA-F' ? (
                     <input 
                       type="text" 
                       value="Seluruh Fakultas"

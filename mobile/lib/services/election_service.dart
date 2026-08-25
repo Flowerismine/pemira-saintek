@@ -37,8 +37,8 @@ class ElectionService {
     for (var periode in allActivePeriods) {
       bool isEligible = false;
 
-      if (periode.jenjang == 'BEM-F' || periode.jenjang == 'SEMA-F') {
-        // Asumsi BEM-F & SEMA-F berlaku untuk seluruh Fakultas (atau cek fakultas_id jika ada spesifik)
+      if (periode.jenjang == 'DEMA-F' || periode.jenjang == 'SEMA-F') {
+        // Asumsi DEMA-F & SEMA-F berlaku untuk seluruh Fakultas (atau cek fakultas_id jika ada spesifik)
         if (periode.fakultasId == null || periode.fakultasId == '' || periode.fakultasId == user.fakultas) {
           isEligible = true;
         }
