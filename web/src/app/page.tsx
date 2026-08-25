@@ -125,7 +125,7 @@ export default function Home() {
                             <div className="flex justify-between items-end mb-1">
                               <div>
                                 <span className="text-xs font-bold text-slate-500">PASLON {k.nomor_urut}</span>
-                                <p className="font-bold text-slate-800">{k.nama_kandidat}</p>
+                                <p className="font-bold text-slate-800">{k.nama}</p>
                               </div>
                               <div className="text-right">
                                 <span className="text-xl font-black text-primary-600">{k.suara}</span>

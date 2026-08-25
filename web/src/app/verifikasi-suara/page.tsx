@@ -23,7 +23,7 @@ type VoteVerifikasi = {
   };
   kandidat?: {
     nomor_urut: number;
-    nama_kandidat: string;
+    nama: string;
     foto_url: string;
   };
   status_verifikasi?: string;
@@ -468,7 +468,7 @@ export default function VerifikasiSuaraPage() {
                     )}
                     <div>
                       <p className="text-xs text-indigo-600 font-bold mb-0.5">PILIHAN KANDIDAT</p>
-                      <p className="text-sm font-bold text-slate-800">Paslon No. {currentVote.kandidat.nomor_urut}: {currentVote.kandidat.nama_kandidat}</p>
+                      <p className="text-sm font-bold text-slate-800">Paslon No. {currentVote.kandidat.nomor_urut}: {currentVote.kandidat.nama}</p>
                     </div>
                   </div>
                 )}

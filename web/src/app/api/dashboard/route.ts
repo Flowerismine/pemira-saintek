@@ -27,7 +27,7 @@ export async function GET() {
       supabase.from('periode_pemilihan').select('id, jenjang, jurusan_id'),
       supabase.from('votes').select('periode_id'),
       supabase.from('whitelist_mahasiswa').select('jurusan'),
-      supabase.from('kandidat').select('id, periode_id, nomor_urut, nama_kandidat'),
+      supabase.from('kandidat').select('id, periode_id, nomor_urut, nama'),
       supabase.from('votes').select('kandidat_id').eq('status_verifikasi', 'terverifikasi')
     ]);
 
