@@ -8,36 +8,28 @@ const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
 export async function GET() {
   try {
-    // 1. Stats Utama
-    const { count: totalDpt } = await supabase
-      .from('whitelist_mahasiswa')
-      .select('*', { count: 'exact', head: true });
-
-    const { count: totalSuara } = await supabase
-      .from('votes')
-      .select('*', { count: 'exact', head: true });
-
-    const { count: antrianVerifikasi } = await supabase
-      .from('votes')
-      .select('*', { count: 'exact', head: true })
-      .eq('status_verifikasi', 'menunggu_verifikasi');
-
-    // 2. Aktivitas Terbaru (5 vote terakhir yang masuk)
-    const { data: recentActivity } = await supabase
-      .from('votes')
-      .select(`
-        id, 
-        created_at, 
-        status_verifikasi,
-        users!votes_user_id_fkey(nim, nama)
-      `)
-      .order('created_at', { ascending: false })
-      .limit(5);
-
-    // 3. Data Grafik (Suara per Periode)
-    const { data: periods } = await supabase.from('periode_pemilihan').select('id, jenjang, jurusan_id');
-    const { data: votes } = await supabase.from('votes').select('periode_id');
-    const { data: whitelist } = await supabase.from('whitelist_mahasiswa').select('jurusan');
+    // Jalankan semua query secara paralel untuk mempercepat loading!
+    const [
+      { count: totalDpt },
+      { count: totalSuara },
+      { count: antrianVerifikasi },
+      { data: recentActivity },
+      { data: periods },
+      { data: votes },
+      { data: whitelist },
+      { data: kandidatList },
+      { data: sahVotes }
+    ] = await Promise.all([
+      supabase.from('whitelist_mahasiswa').select('*', { count: 'exact', head: true }),
+      supabase.from('votes').select('*', { count: 'exact', head: true }),
+      supabase.from('votes').select('*', { count: 'exact', head: true }).eq('status_verifikasi', 'menunggu_verifikasi'),
+      supabase.from('votes').select('id, created_at, status_verifikasi, users!votes_user_id_fkey(nim, nama)').order('created_at', { ascending: false }).limit(5),
+      supabase.from('periode_pemilihan').select('id, jenjang, jurusan_id'),
+      supabase.from('votes').select('periode_id'),
+      supabase.from('whitelist_mahasiswa').select('jurusan'),
+      supabase.from('kandidat').select('id, periode_id, nomor_urut, nama_kandidat'),
+      supabase.from('votes').select('kandidat_id').eq('status_verifikasi', 'terverifikasi')
+    ]);
 
     const totalDptSemua = whitelist?.length || 0;
     const dptPerJurusan = (whitelist || []).reduce((acc: any, curr) => {
@@ -69,15 +61,6 @@ export async function GET() {
     });
 
     // 4. Data Perolehan Suara Paslon (Hanya suara SAH)
-    const { data: kandidatList } = await supabase
-      .from('kandidat')
-      .select('id, periode_id, nomor_urut, nama_kandidat');
-    
-    const { data: sahVotes } = await supabase
-      .from('votes')
-      .select('kandidat_id')
-      .eq('status_verifikasi', 'terverifikasi');
-
     const votesPerKandidat = (sahVotes || []).reduce((acc: any, curr) => {
       acc[curr.kandidat_id] = (acc[curr.kandidat_id] || 0) + 1;
       return acc;
