@@ -455,23 +455,7 @@ export default function VerifikasiSuaraPage() {
                   <span className="text-xs font-medium text-slate-400">{new Date(currentVote.created_at).toLocaleString('id-ID')}</span>
                 </div>
 
-                {/* Info Pilihan Kandidat */}
-                {currentVote.kandidat && (
-                  <div className="mb-4 p-3 bg-indigo-50 border border-indigo-100 rounded-lg flex items-center gap-4">
-                    {currentVote.kandidat.foto_url ? (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img src={currentVote.kandidat.foto_url} alt="Kandidat" className="w-12 h-12 rounded-full object-cover border-2 border-white shadow-sm" />
-                    ) : (
-                      <div className="w-12 h-12 rounded-full bg-indigo-200 flex items-center justify-center text-indigo-700 font-bold">
-                        {currentVote.kandidat.nomor_urut}
-                      </div>
-                    )}
-                    <div>
-                      <p className="text-xs text-indigo-600 font-bold mb-0.5">PILIHAN KANDIDAT</p>
-                      <p className="text-sm font-bold text-slate-800">Paslon No. {currentVote.kandidat.nomor_urut}: {currentVote.kandidat.nama}</p>
-                    </div>
-                  </div>
-                )}
+
                 
                 <div className="mb-4 p-4 bg-slate-50 border border-slate-200 rounded-lg">
                   <p className="text-xs text-slate-500 font-bold mb-1">NOMOR RESI BUKTI</p>
