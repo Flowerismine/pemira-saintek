@@ -10,6 +10,7 @@ type VoteVerifikasi = {
   user_id: string;
   foto_vote_url: string;
   nomor_bukti: string;
+  hash_record?: string;
   created_at: string;
   users?: {
     nim: string;
