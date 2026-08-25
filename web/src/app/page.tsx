@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import StatCard from '@/components/StatCard';
 import { Users, CheckCircle, Clock, Activity } from 'lucide-react';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 
 export default function Home() {
   const [data, setData] = useState<any>(null);
@@ -81,8 +81,8 @@ export default function Home() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 space-y-6">
           <div className="glass-panel p-6 h-96 flex flex-col">
-            <h3 className="text-lg font-semibold text-slate-800 mb-4">Grafik Partisipasi (Per Jurusan)</h3>
-            <div className="flex-1 w-full bg-slate-50 rounded-xl pt-4 pr-4">
+            <h3 className="text-lg font-semibold text-slate-800 mb-4">Grafik Partisipasi Pemilihan</h3>
+            <div className="flex-1 w-full bg-slate-50 rounded-xl pt-4 pr-4 pb-2">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={chartData || []}>
                   <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
@@ -92,7 +92,9 @@ export default function Home() {
                     cursor={{fill: '#f1f5f9'}}
                     contentStyle={{borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)'}}
                   />
-                  <Bar dataKey="partisipasi" fill="#3b82f6" radius={[4, 4, 0, 0]} />
+                  <Legend iconType="circle" wrapperStyle={{ fontSize: '12px', paddingTop: '10px' }} />
+                  <Bar dataKey="Suara Masuk" fill="#3b82f6" radius={[4, 4, 0, 0]} maxBarSize={40} />
+                  <Bar dataKey="Total DPT" fill="#cbd5e1" radius={[4, 4, 0, 0]} maxBarSize={40} />
                 </BarChart>
               </ResponsiveContainer>
             </div>

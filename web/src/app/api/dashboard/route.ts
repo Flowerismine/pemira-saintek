@@ -34,24 +34,39 @@ export async function GET() {
       .order('created_at', { ascending: false })
       .limit(5);
 
-    // 3. Data Grafik (Suara per Jurusan)
-    // Supabase tidak punya GROUP BY sederhana di client, jadi kita ambil data mentah atau gunakan RPC.
-    // Karena ini MVP, kita ambil semua whitelist_mahasiswa yg sudah login dan hitung di server
-    const { data: registeredUsers } = await supabase
-      .from('whitelist_mahasiswa')
-      .select('jurusan')
-      .eq('is_registered', true);
+    // 3. Data Grafik (Suara per Periode)
+    const { data: periods } = await supabase.from('periode_pemilihan').select('id, jenjang, jurusan_id');
+    const { data: votes } = await supabase.from('votes').select('periode_id');
+    const { data: whitelist } = await supabase.from('whitelist_mahasiswa').select('jurusan');
 
-    const jurusanCounts = (registeredUsers || []).reduce((acc: any, curr) => {
-      const jur = curr.jurusan || 'Lainnya';
-      acc[jur] = (acc[jur] || 0) + 1;
+    const totalDptSemua = whitelist?.length || 0;
+    const dptPerJurusan = (whitelist || []).reduce((acc: any, curr) => {
+      const jur = curr.jurusan;
+      if (jur) acc[jur] = (acc[jur] || 0) + 1;
       return acc;
     }, {});
 
-    const chartData = Object.keys(jurusanCounts).map(key => ({
-      name: key,
-      partisipasi: jurusanCounts[key]
-    })).sort((a, b) => b.partisipasi - a.partisipasi);
+    const votesPerPeriode = (votes || []).reduce((acc: any, curr) => {
+      const pid = curr.periode_id;
+      acc[pid] = (acc[pid] || 0) + 1;
+      return acc;
+    }, {});
+
+    const chartData = (periods || []).map(p => {
+      let periodDpt = totalDptSemua;
+      let labelName = p.jenjang;
+      
+      if (p.jenjang === 'HMJ' && p.jurusan_id) {
+        periodDpt = dptPerJurusan[p.jurusan_id] || 0;
+        labelName = `HMJ ${p.jurusan_id}`;
+      }
+
+      return {
+        name: labelName,
+        'Suara Masuk': votesPerPeriode[p.id] || 0,
+        'Total DPT': periodDpt
+      };
+    });
 
     return NextResponse.json({
       stats: {
