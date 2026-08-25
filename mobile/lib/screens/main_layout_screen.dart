@@ -5,6 +5,8 @@ import 'dashboard/dashboard_screen.dart';
 import 'dashboard/live_stats_screen.dart';
 import 'dashboard/receipt_list_screen.dart';
 
+import 'dashboard/audit_log_screen.dart';
+
 class MainLayoutScreen extends ConsumerStatefulWidget {
   const MainLayoutScreen({super.key});
 
@@ -18,6 +20,7 @@ class _MainLayoutScreenState extends ConsumerState<MainLayoutScreen> {
   final List<Widget> _pages = [
     const DashboardScreen(),
     const LiveStatsScreen(),
+    const AuditLogScreen(),
     const ReceiptListScreen(),
   ];
 
@@ -56,6 +59,11 @@ class _MainLayoutScreenState extends ConsumerState<MainLayoutScreen> {
               icon: Icon(Icons.bar_chart_outlined),
               activeIcon: Icon(Icons.bar_chart),
               label: 'Live Stats',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.search_outlined),
+              activeIcon: Icon(Icons.search),
+              label: 'Audit',
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.receipt_long_outlined),

@@ -137,9 +137,15 @@ class ElectionService {
     return List<Map<String, dynamic>>.from(response);
   }
 
-  // 6. Ambil Live Stats
+  // 6. Ambil Live Quick Count (Hasil Sementara)
   Future<List<Map<String, dynamic>>> getLiveStats() async {
-    final response = await _supabase.rpc('get_live_stats_for_user');
+    final response = await _supabase.rpc('get_live_quick_count');
+    return List<Map<String, dynamic>>.from(response ?? []);
+  }
+
+  // 7. Ambil Audit Log (Cek Seluruh Resi)
+  Future<List<Map<String, dynamic>>> getAuditLogs() async {
+    final response = await _supabase.rpc('get_audit_logs');
     return List<Map<String, dynamic>>.from(response ?? []);
   }
 }

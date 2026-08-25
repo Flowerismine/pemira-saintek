@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/theme.dart';
 import '../../services/election_service.dart';
-import 'dashboard_screen.dart'; // import electionServiceProvider
+import 'dashboard_screen.dart'; 
 
 final liveStatsProvider = FutureProvider<List<Map<String, dynamic>>>((ref) async {
   final service = ref.read(electionServiceProvider);
@@ -19,7 +19,7 @@ class LiveStatsScreen extends ConsumerWidget {
     return Scaffold(
       backgroundColor: AppTheme.background,
       appBar: AppBar(
-        title: const Text('Live Statistik'),
+        title: const Text('Live Quick Count'),
         automaticallyImplyLeading: false,
       ),
       body: SafeArea(
@@ -39,14 +39,28 @@ class LiveStatsScreen extends ConsumerWidget {
                 );
               }
 
+              // Group stats by jenjang and fakultas_id
+              final Map<String, List<Map<String, dynamic>>> groupedStats = {};
+              for (var row in stats) {
+                final key = '${row['jenjang']} - ${row['fakultas_id'] ?? 'Saintek'}';
+                if (!groupedStats.containsKey(key)) {
+                  groupedStats[key] = [];
+                }
+                groupedStats[key]!.add(row);
+              }
+
               return ListView.builder(
                 padding: const EdgeInsets.all(24),
-                itemCount: stats.length,
+                itemCount: groupedStats.keys.length,
                 itemBuilder: (context, index) {
-                  final stat = stats[index];
-                  final suaraMasuk = stat['suara_masuk'] as int? ?? 0;
-                  final totalDpt = stat['total_dpt'] as int? ?? 0;
-                  final percentage = totalDpt > 0 ? (suaraMasuk / totalDpt) : 0.0;
+                  final key = groupedStats.keys.elementAt(index);
+                  final candidates = groupedStats[key]!;
+                  
+                  // Calculate total suara in this periode
+                  int totalSuara = 0;
+                  for (var c in candidates) {
+                    totalSuara += (c['suara'] as num?)?.toInt() ?? 0;
+                  }
 
                   return Container(
                     margin: const EdgeInsets.only(bottom: 24),
@@ -72,7 +86,7 @@ class LiveStatsScreen extends ConsumerWidget {
                             borderRadius: BorderRadius.circular(8),
                           ),
                           child: Text(
-                            stat['jenjang'] ?? '',
+                            key,
                             style: const TextStyle(
                               color: AppTheme.primary700,
                               fontWeight: FontWeight.bold,
@@ -81,54 +95,64 @@ class LiveStatsScreen extends ConsumerWidget {
                           ),
                         ),
                         const SizedBox(height: 16),
-                        Text('Partisipasi Pemilih', style: AppTheme.textTheme.titleLarge),
-                        if (stat['jenjang'] == 'HMJ')
-                          Text(stat['jurusan_id'] ?? '', style: AppTheme.textTheme.bodyMedium?.copyWith(color: AppTheme.slate500)),
+                        Text('Hasil Sementara', style: AppTheme.textTheme.titleLarge),
+                        Text('Total Suara Masuk: $totalSuara', style: AppTheme.textTheme.bodyMedium?.copyWith(color: AppTheme.slate500)),
                         const SizedBox(height: 24),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                            Column(
+                        ...candidates.map((c) {
+                          final suara = (c['suara'] as num?)?.toInt() ?? 0;
+                          final percentage = totalSuara > 0 ? (suara / totalSuara) : 0.0;
+                          return Padding(
+                            padding: const EdgeInsets.only(bottom: 16),
+                            child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text('SUARA MASUK', style: AppTheme.textTheme.labelLarge?.copyWith(color: AppTheme.slate400)),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Expanded(
+                                      child: Text(
+                                        'Paslon ${c['nomor_urut']}: ${c['nama']}',
+                                        style: AppTheme.textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w600),
+                                      ),
+                                    ),
+                                    Text(
+                                      '$suara Suara',
+                                      style: AppTheme.textTheme.bodyLarge?.copyWith(color: AppTheme.primary600, fontWeight: FontWeight.bold),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 8),
+                                Stack(
+                                  children: [
+                                    Container(
+                                      height: 8,
+                                      width: double.infinity,
+                                      decoration: BoxDecoration(
+                                        color: AppTheme.slate100,
+                                        borderRadius: BorderRadius.circular(4),
+                                      ),
+                                    ),
+                                    FractionallySizedBox(
+                                      widthFactor: percentage,
+                                      child: Container(
+                                        height: 8,
+                                        decoration: BoxDecoration(
+                                          color: AppTheme.primary500,
+                                          borderRadius: BorderRadius.circular(4),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 4),
                                 Text(
-                                  '$suaraMasuk',
-                                  style: AppTheme.textTheme.displayMedium?.copyWith(color: AppTheme.primary600, fontSize: 32),
+                                  '${(percentage * 100).toStringAsFixed(1)}%',
+                                  style: AppTheme.textTheme.bodySmall?.copyWith(color: AppTheme.slate500),
                                 ),
                               ],
                             ),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              children: [
-                                Text('TOTAL DPT', style: AppTheme.textTheme.labelLarge?.copyWith(color: AppTheme.slate400)),
-                                Text(
-                                  '$totalDpt',
-                                  style: AppTheme.textTheme.titleLarge?.copyWith(color: AppTheme.slate700, fontSize: 24),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 24),
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(8),
-                          child: LinearProgressIndicator(
-                            value: percentage,
-                            minHeight: 12,
-                            backgroundColor: AppTheme.slate100,
-                            valueColor: const AlwaysStoppedAnimation<Color>(AppTheme.primary500),
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        Align(
-                          alignment: Alignment.centerRight,
-                          child: Text(
-                            '${(percentage * 100).toStringAsFixed(1)}%',
-                            style: AppTheme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold, color: AppTheme.slate500),
-                          ),
-                        )
+                          );
+                        }).toList(),
                       ],
                     ),
                   );
@@ -136,7 +160,17 @@ class LiveStatsScreen extends ConsumerWidget {
               );
             },
             loading: () => const Center(child: CircularProgressIndicator()),
-            error: (err, stack) => Center(child: Text('Gagal memuat: $err')),
+            error: (err, stack) => Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Icon(Icons.error_outline, color: Colors.red, size: 48),
+                  const SizedBox(height: 16),
+                  Text('Gagal memuat data', style: AppTheme.textTheme.titleMedium),
+                  Text(err.toString(), style: AppTheme.textTheme.bodySmall, textAlign: TextAlign.center),
+                ],
+              ),
+            ),
           ),
         ),
       ),

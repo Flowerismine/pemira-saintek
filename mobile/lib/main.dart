@@ -5,6 +5,7 @@ import 'core/constants.dart';
 import 'core/theme.dart';
 import 'screens/auth/login_screen.dart';
 import 'screens/dashboard/dashboard_screen.dart';
+import 'screens/main_layout_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -57,7 +58,7 @@ class AuthGate extends StatelessWidget {
         
         // Jika ada sesi, otomatis masuk Dashboard. Jika tidak, ke Login.
         if (session != null) {
-          return const DashboardScreen();
+          return const MainLayoutScreen();
         }
         
         return const LoginScreen();
