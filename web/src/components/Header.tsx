@@ -1,11 +1,48 @@
 "use client";
 
-import { Bell, Search, UserCircle, LogOut } from 'lucide-react';
+import { Bell, Search, LogOut, CheckCircle2 } from 'lucide-react';
 import { supabase } from '@/utils/supabase';
 import { useRouter } from 'next/navigation';
+import { useState, useEffect, useRef } from 'react';
+import Link from 'next/link';
 
 export default function Header() {
   const router = useRouter();
+  const [showNotifications, setShowNotifications] = useState(false);
+  const [pendingKYC, setPendingKYC] = useState(0);
+  const [pendingVotes, setPendingVotes] = useState(0);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const fetchNotifications = async () => {
+      try {
+        const res = await fetch('/api/notifications');
+        const data = await res.json();
+        if (data && !data.error) {
+          setPendingKYC(data.pendingKYC || 0);
+          setPendingVotes(data.pendingVotes || 0);
+        }
+      } catch (err) {
+        console.error('Failed to fetch notifications', err);
+      }
+    };
+
+    fetchNotifications();
+    // Poll every 30 seconds for live updates
+    const interval = setInterval(fetchNotifications, 30000);
+    return () => clearInterval(interval);
+  }, []);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setShowNotifications(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   const handleLogout = async () => {
     if (confirm('Apakah Anda yakin ingin keluar dari dasbor admin?')) {
@@ -14,8 +51,10 @@ export default function Header() {
     }
   };
 
+  const totalNotifications = pendingKYC + pendingVotes;
+
   return (
-    <header className="bg-white border-b border-slate-200 h-16 flex items-center justify-between px-8 z-10 sticky top-0">
+    <header className="bg-white border-b border-slate-200 h-16 flex items-center justify-between px-8 z-20 sticky top-0">
       <div className="flex items-center gap-2">
         <h2 className="text-lg font-semibold text-slate-800">Ringkasan Sistem</h2>
       </div>
@@ -30,13 +69,74 @@ export default function Header() {
           />
         </div>
 
-        <button 
-          onClick={() => alert('Tidak ada notifikasi sistem terbaru saat ini.')}
-          className="relative p-2 rounded-full hover:bg-slate-100 text-slate-500 transition-colors"
-        >
-          <Bell size={20} />
-          <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full border-2 border-white"></span>
-        </button>
+        {/* NOTIFICATION BELL */}
+        <div className="relative" ref={dropdownRef}>
+          <button 
+            onClick={() => setShowNotifications(!showNotifications)}
+            className={`relative p-2 rounded-full transition-colors ${showNotifications ? 'bg-primary-50 text-primary-600' : 'hover:bg-slate-100 text-slate-500'}`}
+          >
+            <Bell size={20} />
+            {totalNotifications > 0 && (
+              <span className="absolute top-1 right-1 flex h-3 w-3">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-3 w-3 bg-red-500 border-2 border-white"></span>
+              </span>
+            )}
+          </button>
+
+          {/* DROPDOWN */}
+          {showNotifications && (
+            <div className="absolute right-0 mt-2 w-80 bg-white rounded-xl shadow-xl border border-slate-100 overflow-hidden z-50 animate-in fade-in slide-in-from-top-2 duration-200">
+              <div className="px-4 py-3 bg-slate-50 border-b border-slate-100 flex justify-between items-center">
+                <h3 className="font-semibold text-slate-800">Notifikasi</h3>
+                {totalNotifications > 0 && (
+                  <span className="bg-red-100 text-red-600 text-xs font-bold px-2 py-0.5 rounded-full">
+                    {totalNotifications} Baru
+                  </span>
+                )}
+              </div>
+              
+              <div className="max-h-80 overflow-y-auto">
+                {totalNotifications === 0 ? (
+                  <div className="p-6 text-center text-slate-500 flex flex-col items-center gap-2">
+                    <CheckCircle2 size={32} className="text-green-500 opacity-50" />
+                    <p className="text-sm">Yey! Tidak ada tugas atau antrian verifikasi saat ini.</p>
+                  </div>
+                ) : (
+                  <div className="divide-y divide-slate-50">
+                    {pendingKYC > 0 && (
+                      <Link href="/verifikasi-dpt" onClick={() => setShowNotifications(false)} className="block p-4 hover:bg-primary-50 transition-colors group cursor-pointer">
+                        <div className="flex gap-3">
+                          <div className="w-10 h-10 rounded-full bg-orange-100 text-orange-600 flex items-center justify-center flex-shrink-0">
+                            <span className="font-bold text-sm">+{pendingKYC}</span>
+                          </div>
+                          <div>
+                            <p className="text-sm font-medium text-slate-800 group-hover:text-primary-700">Verifikasi DPT Baru</p>
+                            <p className="text-xs text-slate-500 mt-0.5">Ada {pendingKYC} mahasiswa baru yang mendaftar dan menunggu persetujuan KYC.</p>
+                          </div>
+                        </div>
+                      </Link>
+                    )}
+                    
+                    {pendingVotes > 0 && (
+                      <Link href="/verifikasi-suara" onClick={() => setShowNotifications(false)} className="block p-4 hover:bg-primary-50 transition-colors group cursor-pointer">
+                        <div className="flex gap-3">
+                          <div className="w-10 h-10 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center flex-shrink-0">
+                            <span className="font-bold text-sm">+{pendingVotes}</span>
+                          </div>
+                          <div>
+                            <p className="text-sm font-medium text-slate-800 group-hover:text-primary-700">Verifikasi Suara Masuk</p>
+                            <p className="text-xs text-slate-500 mt-0.5">Ada {pendingVotes} suara baru yang masuk dan perlu diverifikasi keabsahannya.</p>
+                          </div>
+                        </div>
+                      </Link>
+                    )}
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+        </div>
 
         <div 
           onClick={handleLogout}

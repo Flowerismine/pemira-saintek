@@ -124,6 +124,23 @@ class _AuditLogScreenState extends ConsumerState<AuditLogScreen> with SingleTick
           final kandidatNama = log['kandidat_nama'] ?? 'Tidak Diketahui';
           final nomorUrut = log['nomor_urut'] ?? '?';
 
+          final status = log['status_verifikasi'] ?? 'menunggu_verifikasi';
+          Color statusColor;
+          String statusText;
+          switch (status) {
+            case 'terverifikasi':
+              statusColor = Colors.green;
+              statusText = 'SAH';
+              break;
+            case 'gagal_verifikasi':
+              statusColor = Colors.red;
+              statusText = 'DITOLAK';
+              break;
+            default:
+              statusColor = Colors.orange;
+              statusText = 'MENUNGGU';
+          }
+
           return Container(
             margin: const EdgeInsets.only(bottom: 12),
             padding: const EdgeInsets.all(16),
@@ -145,12 +162,24 @@ class _AuditLogScreenState extends ConsumerState<AuditLogScreen> with SingleTick
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text('RESI: ${log['nomor_bukti']}', style: const TextStyle(fontWeight: FontWeight.bold, color: AppTheme.slate800)),
-                    Text(formattedDate, style: const TextStyle(fontSize: 12, color: AppTheme.slate500)),
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      decoration: BoxDecoration(
+                        color: statusColor.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Text(
+                        statusText,
+                        style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: statusColor),
+                      ),
+                    ),
                   ],
                 ),
                 const SizedBox(height: 8),
                 Text('Memilih: Paslon $nomorUrut - $kandidatNama', style: const TextStyle(color: AppTheme.primary600, fontWeight: FontWeight.w600)),
                 const SizedBox(height: 8),
+                Text('Waktu: $formattedDate', style: const TextStyle(fontSize: 12, color: AppTheme.slate500)),
+                const SizedBox(height: 4),
                 Text('Hash: ${log['hash_record']}', style: const TextStyle(fontSize: 10, color: AppTheme.slate400, fontFamily: 'monospace')),
                 if (log['sasaran'] != null && log['sasaran'] != '')
                   Padding(
