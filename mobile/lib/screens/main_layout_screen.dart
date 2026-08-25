@@ -63,7 +63,7 @@ class _MainLayoutScreenState extends ConsumerState<MainLayoutScreen> {
             BottomNavigationBarItem(
               icon: Icon(Icons.search_outlined),
               activeIcon: Icon(Icons.search),
-              label: 'Audit',
+              label: 'Cek Resi',
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.receipt_long_outlined),

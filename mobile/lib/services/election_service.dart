@@ -43,8 +43,8 @@ class ElectionService {
           isEligible = true;
         }
       } else if (periode.jenjang == 'HMJ') {
-        // HANYA jika sasaran (jurusan_id di DB) sama persis dengan jurusan user
-        if (periode.jurusanId == user.jurusan) {
+        // HANYA jika sasaran (disimpan di fakultas_id di DB) sama persis dengan jurusan user
+        if (periode.fakultasId == user.jurusan) {
           isEligible = true;
         }
       }

@@ -40,7 +40,7 @@ class _AuditLogScreenState extends ConsumerState<AuditLogScreen> with SingleTick
     return Scaffold(
       backgroundColor: AppTheme.background,
       appBar: AppBar(
-        title: const Text('Audit Transparansi'),
+        title: const Text('Cek Resi & Transparansi'),
         automaticallyImplyLeading: false,
         bottom: TabBar(
           controller: _tabController,
