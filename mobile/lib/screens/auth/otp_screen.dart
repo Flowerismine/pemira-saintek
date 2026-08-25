@@ -4,7 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:pinput/pinput.dart';
 import '../../core/theme.dart';
 import '../../services/auth_service.dart';
-import '../dashboard/dashboard_screen.dart';
+import '../main_layout_screen.dart';
 import '../onboarding/ktm_screen.dart';
 import 'login_screen.dart'; // import provider
 
@@ -43,7 +43,8 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
         
         if (mounted) {
           if (hasKtm) {
-            Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const DashboardScreen()));
+            // Jika profil lengkap, langsung ke Main Layout
+            Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const MainLayoutScreen()));
           } else {
             Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const KtmScreen()));
           }

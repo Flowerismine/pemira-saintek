@@ -43,8 +43,8 @@ class ElectionService {
           isEligible = true;
         }
       } else if (periode.jenjang == 'HMJ') {
-        // HANYA jika sasaran (fakultas_id di DB) sama persis dengan jurusan user
-        if (periode.fakultasId == user.jurusan) {
+        // HANYA jika sasaran (jurusan_id di DB) sama persis dengan jurusan user
+        if (periode.jurusanId == user.jurusan) {
           isEligible = true;
         }
       }
@@ -121,5 +121,25 @@ class ElectionService {
       }
       throw Exception('Gagal mengirim suara: ${e.toString()}');
     }
+  }
+
+  // 5. Ambil Resi Saya
+  Future<List<Map<String, dynamic>>> getMyReceipts() async {
+    final user = _supabase.auth.currentUser;
+    if (user == null) throw Exception('Sesi tidak valid.');
+
+    final response = await _supabase
+        .from('votes')
+        .select('id, nomor_bukti, hash_record, created_at, status_verifikasi, periode_pemilihan(jenjang)')
+        .eq('user_id', user.id)
+        .order('created_at', ascending: false);
+    
+    return List<Map<String, dynamic>>.from(response);
+  }
+
+  // 6. Ambil Live Stats
+  Future<List<Map<String, dynamic>>> getLiveStats() async {
+    final response = await _supabase.rpc('get_live_stats_for_user');
+    return List<Map<String, dynamic>>.from(response ?? []);
   }
 }

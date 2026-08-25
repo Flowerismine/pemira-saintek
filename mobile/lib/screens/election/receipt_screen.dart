@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../core/theme.dart';
-import '../dashboard/dashboard_screen.dart';
+import '../main_layout_screen.dart';
 
 class ReceiptScreen extends StatelessWidget {
   final String nomorBukti;
@@ -79,10 +79,10 @@ class ReceiptScreen extends StatelessWidget {
 
               ElevatedButton(
                 onPressed: () {
-                  // Kembali ke Dashboard dan hapus semua layar sebelumnya
+                  // Kembali ke Main Layout dan hapus semua layar sebelumnya
                   Navigator.pushAndRemoveUntil(
                     context,
-                    MaterialPageRoute(builder: (_) => const DashboardScreen()),
+                    MaterialPageRoute(builder: (_) => const MainLayoutScreen()),
                     (route) => false,
                   );
                 },

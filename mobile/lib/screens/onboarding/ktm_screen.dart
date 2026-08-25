@@ -6,7 +6,7 @@ import 'package:image_picker/image_picker.dart';
 import '../../core/theme.dart';
 import '../../services/auth_service.dart';
 import '../auth/login_screen.dart'; // import provider authServiceProvider
-import '../dashboard/dashboard_screen.dart';
+import '../main_layout_screen.dart';
 
 class KtmScreen extends ConsumerStatefulWidget {
   const KtmScreen({super.key});
@@ -56,8 +56,8 @@ class _KtmScreenState extends ConsumerState<KtmScreen> {
       await authService.uploadKTM(_imageFile!, extension);
       
       if (mounted) {
-        // Jika sukses, lempar ke Dashboard
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const DashboardScreen()));
+        // Jika sukses, lempar ke Main Layout
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const MainLayoutScreen()));
       }
     } catch (e) {
       setState(() => _errorMessage = e.toString().replaceAll('Exception: ', ''));

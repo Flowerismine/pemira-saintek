@@ -449,6 +449,15 @@ export default function VerifikasiSuaraPage() {
                   <span className="text-xs font-medium text-slate-400">{new Date(currentVote.created_at).toLocaleString('id-ID')}</span>
                 </div>
                 
+                <div className="mb-4 p-4 bg-slate-50 border border-slate-200 rounded-lg">
+                  <p className="text-xs text-slate-500 font-bold mb-1">NOMOR RESI BUKTI</p>
+                  <p className="text-lg font-mono font-bold text-slate-800 mb-3">{currentVote.nomor_bukti}</p>
+                  <p className="text-xs text-slate-500 font-bold mb-1 flex items-center gap-1">
+                    <ShieldAlert size={14} className="text-primary-500" /> HASH KRIPTOGRAFI (SHA-256)
+                  </p>
+                  <p className="text-xs font-mono text-slate-600 break-all bg-slate-200 p-2 rounded">{currentVote.hash_record || 'Menunggu Sinkronisasi'}</p>
+                </div>
+                
                 <div className="flex-1 bg-slate-100 rounded-xl flex items-center justify-center overflow-hidden relative group min-h-[300px]">
                   {currentVote.foto_vote_url ? (
                     // eslint-disable-next-line @next/next/no-img-element
