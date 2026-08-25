@@ -24,7 +24,7 @@ export async function GET() {
       supabase.from('votes').select('*', { count: 'exact', head: true }),
       supabase.from('votes').select('*', { count: 'exact', head: true }).eq('status_verifikasi', 'menunggu_verifikasi'),
       supabase.from('votes').select('id, created_at, status_verifikasi, users!votes_user_id_fkey(nim, nama)').order('created_at', { ascending: false }).limit(5),
-      supabase.from('periode_pemilihan').select('id, jenjang, jurusan_id'),
+      supabase.from('periode_pemilihan').select('id, jenjang, fakultas_id'),
       supabase.from('votes').select('periode_id'),
       supabase.from('whitelist_mahasiswa').select('jurusan'),
       supabase.from('kandidat').select('id, periode_id, nomor_urut, nama'),
@@ -48,9 +48,9 @@ export async function GET() {
       let periodDpt = totalDptSemua;
       let labelName = p.jenjang;
       
-      if (p.jenjang === 'HMJ' && p.jurusan_id) {
-        periodDpt = dptPerJurusan[p.jurusan_id] || 0;
-        labelName = `HMJ ${p.jurusan_id}`;
+      if (p.jenjang === 'HMJ' && p.fakultas_id) {
+        periodDpt = dptPerJurusan[p.fakultas_id] || 0;
+        labelName = `HMJ ${p.fakultas_id}`;
       }
 
       return {
@@ -75,7 +75,7 @@ export async function GET() {
     const candidateChartData = (periods || []).map(p => {
       return {
         periode_id: p.id,
-        jenjang: p.jenjang === 'HMJ' ? `HMJ ${p.jurusan_id}` : p.jenjang,
+        jenjang: p.jenjang === 'HMJ' ? `HMJ ${p.fakultas_id}` : p.jenjang,
         kandidat: candidateData.filter(c => c.periode_id === p.id)
       };
     });
