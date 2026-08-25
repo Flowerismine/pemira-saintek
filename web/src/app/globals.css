@@ -1,0 +1,77 @@
+@import "tailwindcss";
+
+@theme {
+  /* Premium Light Color Palette (Standard SaaS) */
+  --color-background: #f8fafc; /* Very light slate for background */
+  --color-foreground: #0f172a; /* Dark slate for primary text */
+  --color-primary-50: #eff6ff;
+  --color-primary-100: #dbeafe;
+  --color-primary-200: #bfdbfe;
+  --color-primary-300: #93c5fd;
+  --color-primary-400: #60a5fa;
+  --color-primary-500: #3b82f6; 
+  --color-primary-600: #2563eb; /* Main Action Color */
+  --color-primary-700: #1d4ed8;
+  --color-primary-800: #1e40af;
+  --color-primary-900: #1e3a8a;
+
+  --color-card: #ffffff;
+  --color-card-hover: #f1f5f9;
+  --color-border: #e2e8f0;
+  --color-muted: #64748b;
+
+  --font-sans: var(--font-outfit), ui-sans-serif, system-ui, sans-serif;
+  
+  --animate-fade-in: fade-in 0.5s ease-out;
+  --animate-slide-up: slide-up 0.5s ease-out;
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slide-up {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+:root {
+  --background: #f8fafc;
+  --foreground: #0f172a;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  min-height: 100vh;
+}
+
+/* Light Theme Utilities */
+@layer utilities {
+  .glass {
+    @apply bg-white border border-border shadow-sm;
+  }
+  .glass-panel {
+    @apply bg-white border border-border shadow-sm rounded-xl;
+  }
+  .glass-button {
+    @apply bg-primary-600 hover:bg-primary-700 text-white transition-all duration-200 shadow-sm font-medium px-4 py-2 rounded-lg;
+  }
+}
+
+/* Custom Scrollbar for a premium feel */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent; 
+}
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1; 
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8; 
+}

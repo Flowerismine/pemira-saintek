@@ -1,0 +1,5 @@
+class AppConstants {
+  // SUPABASE CONFIGURATION
+  static const String supabaseUrl = 'https://vdphlanneoyqnnmsvtrx.supabase.co';
+  static const String supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZkcGhsYW5uZW95cW5ubXN2dHJ4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc1Njk1NTYsImV4cCI6MjEwMzE0NTU1Nn0.2Qf7RdVNnfnNcAHv6g_5PG8Ds0XF-Oe5uK45Xt3frIA';
+}
