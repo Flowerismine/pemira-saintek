@@ -68,6 +68,35 @@ export async function GET() {
       };
     });
 
+    // 4. Data Perolehan Suara Paslon (Hanya suara SAH)
+    const { data: kandidatList } = await supabase
+      .from('kandidat')
+      .select('id, periode_id, nomor_urut, nama_kandidat');
+    
+    const { data: sahVotes } = await supabase
+      .from('votes')
+      .select('kandidat_id')
+      .eq('status_verifikasi', 'terverifikasi');
+
+    const votesPerKandidat = (sahVotes || []).reduce((acc: any, curr) => {
+      acc[curr.kandidat_id] = (acc[curr.kandidat_id] || 0) + 1;
+      return acc;
+    }, {});
+
+    const candidateData = (kandidatList || []).map(k => ({
+      ...k,
+      suara: votesPerKandidat[k.id] || 0
+    })).sort((a, b) => a.nomor_urut - b.nomor_urut);
+
+    // Kelompokkan kandidat per periode
+    const candidateChartData = (periods || []).map(p => {
+      return {
+        periode_id: p.id,
+        jenjang: p.jenjang === 'HMJ' ? `HMJ ${p.jurusan_id}` : p.jenjang,
+        kandidat: candidateData.filter(c => c.periode_id === p.id)
+      };
+    });
+
     return NextResponse.json({
       stats: {
         totalDpt: totalDpt || 0,
@@ -76,7 +105,8 @@ export async function GET() {
         serverStatus: 'Optimal'
       },
       activity: recentActivity || [],
-      chartData: chartData.length > 0 ? chartData : [{ name: 'Belum Ada', partisipasi: 0 }]
+      chartData: chartData.length > 0 ? chartData : [{ name: 'Belum Ada', partisipasi: 0 }],
+      candidateData: candidateChartData
     });
 
   } catch (error: any) {

@@ -30,7 +30,7 @@ export default function Home() {
     );
   }
 
-  const { stats, activity, chartData } = data || {};
+  const { stats, activity, chartData, candidateData } = data || {};
   return (
     <div className="space-y-6 pb-8">
       {/* Welcome Banner */}
@@ -99,6 +99,55 @@ export default function Home() {
               </ResponsiveContainer>
             </div>
           </div>
+          {/* Live Quick Count Candidates */}
+          {candidateData && candidateData.length > 0 && (
+            <div className="space-y-6">
+              {candidateData.map((periode: any) => {
+                if (!periode.kandidat || periode.kandidat.length === 0) return null;
+                
+                // Hitung total suara sah di periode ini untuk persentase
+                const totalSuaraSah = periode.kandidat.reduce((sum: number, k: any) => sum + k.suara, 0);
+
+                return (
+                  <div key={periode.periode_id} className="glass-panel p-6 flex flex-col border-t-4 border-primary-500">
+                    <div className="flex justify-between items-center mb-6">
+                      <h3 className="text-lg font-semibold text-slate-800">Quick Count: {periode.jenjang}</h3>
+                      <span className="bg-primary-50 text-primary-700 text-xs px-3 py-1 rounded-full font-bold">
+                        {totalSuaraSah} Suara Sah
+                      </span>
+                    </div>
+                    
+                    <div className="space-y-4">
+                      {periode.kandidat.map((k: any) => {
+                        const percentage = totalSuaraSah > 0 ? ((k.suara / totalSuaraSah) * 100).toFixed(1) : '0.0';
+                        return (
+                          <div key={k.id} className="relative">
+                            <div className="flex justify-between items-end mb-1">
+                              <div>
+                                <span className="text-xs font-bold text-slate-500">PASLON {k.nomor_urut}</span>
+                                <p className="font-bold text-slate-800">{k.nama_kandidat}</p>
+                              </div>
+                              <div className="text-right">
+                                <span className="text-xl font-black text-primary-600">{k.suara}</span>
+                                <span className="text-sm text-slate-500 ml-1">suara ({percentage}%)</span>
+                              </div>
+                            </div>
+                            <div className="w-full bg-slate-100 rounded-full h-3 overflow-hidden">
+                              <div 
+                                className="bg-gradient-to-r from-primary-500 to-indigo-500 h-3 rounded-full transition-all duration-1000" 
+                                style={{ width: `${percentage}%` }}
+                              ></div>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+
         </div>
 
         <div className="space-y-6">

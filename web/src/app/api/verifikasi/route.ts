@@ -16,7 +16,8 @@ export async function GET(request: Request) {
     .select(`
       id, user_id, foto_vote_url, nomor_bukti, hash_record, created_at, status_verifikasi, catatan_admin,
       users!votes_user_id_fkey (nim, nama, foto_ktm_url, fakultas),
-      periode_pemilihan!inner (id, jenjang)
+      periode_pemilihan!inner (id, jenjang),
+      kandidat!votes_kandidat_id_fkey (nomor_urut, nama_kandidat, foto_url)
     `)
     .eq('status_verifikasi', status);
 
